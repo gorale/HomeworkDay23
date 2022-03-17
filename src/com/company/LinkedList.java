@@ -1,32 +1,39 @@
 package com.company;
 
+import java.util.Iterator;
+
 public class LinkedList implements List {
 
+
     private static Node head;
-    private int size = 0;
+    private static int size = 0;
 
-    public static void main(String[] args) {
+    private class LinkedListIterator implements Iterator<Integer>{
+        private int index;
 
-        LinkedList linkedList = new LinkedList();
+        private Node node = head;
 
-        System.out.println("get " + linkedList.get(6));
-        linkedList.add(0, 2);
-        linkedList.add(1);
-        linkedList.add(2);
-        linkedList.add(3);
-        linkedList.add(4);
-        linkedList.add(5);
-        linkedList.add(6);
-        System.out.println(linkedList.toString());
-        linkedList.add(3,55);
-
-
-
-        System.out.println(linkedList.toString());
-        System.out.println(linkedList.size());
-        System.out.println(linkedList.isEmpty());
-
+        @Override
+        public boolean hasNext() {
+            return index < size();
+        }
+        @Override
+        public Integer next() {
+            Integer temp;
+            index++;
+            temp = node.val;
+            node = node.next;
+            return temp;
+        }
     }
+
+    @Override
+    public Iterator<Integer> iterator() {
+        return new LinkedListIterator();
+    }
+
+
+
 
     @Override
     public int size() {
@@ -83,6 +90,7 @@ public class LinkedList implements List {
         while (temp.next != null) {
             temp = temp.next;
         }
+
         temp.next = new Node(val);
 
     }
@@ -90,24 +98,16 @@ public class LinkedList implements List {
     @Override
     public void add(int index, int val) {
         if (index < 0 || index > size()) {
-            System.out.println("Index out of bounds");
-            return;
+            throw new IndexOutOfBoundsException();
         }
-        if (index == size()) {
-            add(val);
-            return;
+        Node newNode = new Node(val);
+        Node temp = head;
+        int counter = 0;
+        while (counter < index-1){
+            temp = temp.next;
+            counter++;
         }
-        if (index == 0) {
-            head = new Node(val);
-        } else {
-            Node temp = head;
-            for (int i = 0; i < index; i++) {
-                temp = temp.next;
-            }
-            temp.next = new Node(val);
-        }
-
-
+        temp.next = newNode;
     }
 
     @Override
@@ -132,11 +132,16 @@ public class LinkedList implements List {
 
     }
 
+    @Override
     public String toString() {
-        for (Node x = head; x != null; x = x.next) {
-            System.out.print(x.val + " ");
+        StringBuilder list = new StringBuilder();
+        Node node = head;
+        for (int i = 0; i < size(); i++) {
+            list.append(node.val);
+            list.append(" ");
+            node = node.next;
         }
-        return "";
+        return String.valueOf(list);
     }
 
     private static class Node {
@@ -147,9 +152,8 @@ public class LinkedList implements List {
             this.val = val;
 
         }
-
-
     }
+
 
 
 }

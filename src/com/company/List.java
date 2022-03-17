@@ -1,6 +1,12 @@
 package com.company;
 
-public interface List {
+import java.util.Iterator;
+
+public interface List extends Iterable<Integer>{
+
+    @Override
+    Iterator<Integer> iterator();
+
     int size();
 
     boolean isEmpty();
